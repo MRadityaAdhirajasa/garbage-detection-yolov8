@@ -3,7 +3,6 @@ from ultralytics import YOLO
 from PIL import Image
 import numpy as np
 
-# --- KONFIGURASI HALAMAN ---
 st.set_page_config(
     page_title="Garbage Detection AI",
     page_icon="♻️",
@@ -11,7 +10,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- JUDUL & HEADER ---
 st.title("♻️ Smart Waste Classification System")
 st.markdown("""
 ### Powered by YOLOv8
@@ -19,11 +17,8 @@ Sistem ini menggunakan Artificial Intelligence untuk mendeteksi dan mengklasifik
 ke dalam 6 kategori: **Biodegradable, Cardboard, Glass, Metal, Paper, dan Plastic**.
 """)
 
-# --- SIDEBAR (PENGATURAN) ---
 st.sidebar.header("⚙️ Model Configuration")
 
-# Slider untuk Confidence Threshold
-# Semakin tinggi, model semakin "pemilih" (hanya deteksi jika sangat yakin)
 conf_threshold = st.sidebar.slider(
     "Confidence Threshold", 
     min_value=0.0, 
@@ -40,21 +35,17 @@ st.sidebar.info(
     "menggunakan arsitektur YOLOv8 pada custom dataset."
 )
 
-# --- LOAD MODEL (CACHED) ---
-# @st.cache_resource agar model tidak diload ulang setiap kali user klik sesuatu
 @st.cache_resource
 def load_model(model_path):
     return YOLO(model_path)
 
 try:
-    # Pastikan file 'best.pt' ada di folder yang sama
     model = load_model("best.pt")
     st.sidebar.success("✅ Model Loaded Successfully")
 except Exception as e:
     st.error(f"Gagal memuat model. Pastikan file 'best.pt' ada. Error: {e}")
     st.stop()
 
-# --- UPLOAD GAMBAR ---
 uploaded_file = st.file_uploader("Upload foto sampah di sini...", type=['jpg', 'jpeg', 'png'])
 
 if uploaded_file is not None:
@@ -74,10 +65,7 @@ if uploaded_file is not None:
             # 4. PROSES INFERENSI
             results = model.predict(image, conf=conf_threshold)
             
-            # 5. Ambil hasil plot (gambar dengan kotak)
-            # YOLO mengembalikan array BGR (OpenCV format), Streamlit butuh RGB
-            # Kita gunakan parameter channel="BGR" di st.image nanti, atau convert manual.
-            # Plot() mengembalikan numpy array BGR.
+            # 5. Ambil hasil plot 
             res_plotted = results[0].plot()
             
             # Convert BGR ke RGB agar warna tidak aneh di Streamlit
@@ -85,14 +73,11 @@ if uploaded_file is not None:
 
     with col2:
         st.subheader("🤖 AI Detection Result")
-        # Tampilkan jika tombol sudah ditekan
         if 'res_plotted_rgb' in locals():
             st.image(res_plotted_rgb, caption="Predicted Output", use_column_width=True)
             
-            # Tampilkan statistik deteksi
             st.success("Deteksi Selesai!")
             
-            # (Opsional) Menampilkan jumlah objek per kelas
             boxes = results[0].boxes
             if len(boxes) > 0:
                 st.markdown("**Objek Terdeteksi:**")
