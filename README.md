@@ -8,7 +8,7 @@ An end-to-end Computer Vision application capable of detecting and classifying w
 
 ## 🚀 Live Demo
 Try the app directly in your browser:
-### [👉 Click Here to Open App](https://garbage-detection-yolov8.streamlit.app)
+### [👉 Click Here to Open App]([https://garbage-detection-yolov8.streamlit.app](https://waste-detection-yolov8.streamlit.app/))
 *(Please allow a few seconds for the app to wake up)*
 
 ---
